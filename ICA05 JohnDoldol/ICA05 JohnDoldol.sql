@@ -26,3 +26,24 @@ select
 from Customer
 where Fax is null and State is not null
 go
+
+--q4
+declare @7minutes as int = 420000
+declare @8minutes as int = 480000
+select
+	TrackId as 'Track ID',
+	left(Name, 26) as 'Name',
+	left(Composer, 64) as 'Written by'
+from Track	
+where GenreId = 2 and Milliseconds between @7minutes and @8minutes
+go
+
+--q5
+select
+	left(Company,48) as 'Company Name',
+	LastName as 'Contact',
+	left(Address,36) as 'Street Address'
+from Customer
+where Country in('Argentina','Bolivia','Brazil','Chile','Colombia','Ecuador','Guyana',
+'Paraguay','Peru','Suriname','Uruguay','Venezuela') and Company is not NULL
+go
