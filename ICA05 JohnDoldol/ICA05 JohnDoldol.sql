@@ -47,3 +47,12 @@ from Customer
 where Country in('Argentina','Bolivia','Brazil','Chile','Colombia','Ecuador','Guyana',
 'Paraguay','Peru','Suriname','Uruguay','Venezuela') and Company is not NULL
 go
+
+--q6
+select
+	TrackId as 'Track ID',
+	left(Name,50) as 'Title',
+	Composer as 'Composer'
+from Track
+where name like 'black%' or composer like '%verd%' 
+select name from Genre in('Rock')
