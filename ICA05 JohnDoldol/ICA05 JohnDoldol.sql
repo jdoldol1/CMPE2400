@@ -54,5 +54,8 @@ select
 	left(Name,50) as 'Title',
 	Composer as 'Composer'
 from Track
-where name like 'black%' or composer like '%verd%' 
-select name from Genre in('Rock')
+where (name like 'black%' or composer like '%verd%') and GenreId not in(1,3,5,7,9)
+go
+
+--q7
+
