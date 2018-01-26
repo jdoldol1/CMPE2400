@@ -58,4 +58,9 @@ where (name like 'black%' or composer like '%verd%') and GenreId not in(1,3,5,7,
 go
 
 --q7
-
+select
+	TrackId as 'Track ID',
+	Convert(time,dateadd(ms,Milliseconds,0)) as 'Time',
+	UnitPrice / cast(Convert(time,dateadd(ms,Milliseconds,0)) as money) as 'Cost/Time'
+from Track
+go
