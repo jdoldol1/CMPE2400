@@ -19,7 +19,7 @@ go
 
 --q3
 select 
-	left(CustomerId, 10) as 'Customer ID',
+	CustomerId as 'Customer ID',
 	cast(FirstName as varchar(18) ) as 'First Name',
 	cast(Country as varchar(18)) as 'Country',
 	cast(State as varchar(18)) as 'Region'
@@ -60,7 +60,10 @@ go
 --q7
 select
 	TrackId as 'Track ID',
-	Convert(time,dateadd(ms,Milliseconds,0)) as 'Time',
-	UnitPrice / cast(Convert(time,dateadd(ms,Milliseconds,0)) as money) as 'Cost/Time'
-from Track
+	left(Convert(time,dateadd(ms,Milliseconds,0)),12) as 'Time',	
+	cast(UnitPrice / (cast(Milliseconds as decimal)/60000)as money) as 'Cost/Minute',
+	cast(Bytes / (cast(Milliseconds as decimal)/1000) as decimal(10,3)) as 'Bytes/Second'
+from Track 
+where Milliseconds > 60000
+and cast(UnitPrice / (cast(Milliseconds as decimal)/60000)as money) > 2.75
 go
