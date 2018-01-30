@@ -74,7 +74,15 @@ select
 	City as 'City',
 	Country as 'Country'
 from Customer
-where (Country not like '_a%' or Country not like '_e%' or Country not like '_m%' or Country not like '_y%')
+where Country like '%[^aemy]'
 and Company is not null
 order by Country, City asc
 
+--q8
+select Distinct
+	Country as 'Country'
+from Customer
+where Country like '[a-f]%'
+order by Country desc
+
+--q9
