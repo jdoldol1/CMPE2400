@@ -27,7 +27,7 @@ select
 	left(Composer,12) as 'Composer',
 	UnitPrice as 'Unit Price'
 from Track
-where (Name like '%black%' and Name not like 'black%' and Name not like '%black' and Name not like '_black%') or Name like '%white%'
+where Name like '% black %'or Name like '%white%'
 order by Name asc
 go
 
