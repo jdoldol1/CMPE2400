@@ -93,3 +93,4 @@ select distinct
 from Track
 where (GenreId = 1) and (LEN(SUBSTRING(Name,1,CHARINDEX(' ',Name))) > 3) and Name like '[aeiou]%'
 order by SUBSTRING(Name,1,CHARINDEX(' ',Name))
+go
