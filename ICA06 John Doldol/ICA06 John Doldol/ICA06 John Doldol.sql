@@ -77,6 +77,7 @@ from Customer
 where Country like '%[^aemy]'
 and Company is not null
 order by Country, City asc
+go
 
 --q8
 select Distinct
@@ -84,5 +85,11 @@ select Distinct
 from Customer
 where Country like '[a-f]%'
 order by Country desc
+go
 
 --q9
+select distinct
+	SUBSTRING(Name,1,CHARINDEX(' ',Name)) as 'First Word'
+from Track
+where (GenreId = 1) and (LEN(SUBSTRING(Name,1,CHARINDEX(' ',Name))) > 3) and Name like '[aeiou]%'
+order by SUBSTRING(Name,1,CHARINDEX(' ',Name))
