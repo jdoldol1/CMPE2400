@@ -33,7 +33,7 @@ go
 
 --q4
 select
-	CONCAT(InvoiceId,':', TrackId) as 'Inv:Track',
+	CONCAT(left(InvoiceId,6),':', left(TrackId,6)) as 'Inv:Track',
 	UnitPrice as 'Unit Price',
 	Quantity as 'Quantity',
 	UnitPrice * Quantity as 'Cost'
@@ -50,8 +50,31 @@ select
 	Phone as 'Phone',
 	Email as 'Email'
 from Customer
-where (PostalCode like '[a-z][0-9][a-z]%[0-9][a-z][0-9]') or (Phone like '%[0-2][0-2][0-2][0-2]%')
+where (PostalCode like '[a-z][0-9][a-z]%[0-9][a-z][0-9]') 
+or (Phone like '%[0-2][0-2][0-2][0-2]%')
 order by [First Name] asc
 go
 
 --q6
+select
+	LastName as 'LastName',
+	DATEDIFF(YEAR,BirthDate,getdate()) + DATEDIFF(YEAR,HireDate,GETDATE()) as 'Magic Number',	
+	case
+		when DATEDIFF(YEAR,BirthDate,getdate()) + DATEDIFF(YEAR,HireDate,GETDATE()) > 84
+		then 'Yup'
+		else cast(85 - (DATEDIFF(YEAR,BirthDate,getdate()) + DATEDIFF(YEAR,HireDate,GETDATE())) as varchar(3))
+	end as 'Yet ?'
+from Employee
+order by DATEDIFF(YEAR,BirthDate,getdate()) + DATEDIFF(YEAR,HireDate,GETDATE())
+go
+
+--q7
+select
+	LastName as 'Last Name',
+	City as 'City',
+	Country as 'Country'
+from Customer
+where (Country not like '_a%' or Country not like '_e%' or Country not like '_m%' or Country not like '_y%')
+and Company is not null
+order by Country, City asc
+
