@@ -98,7 +98,7 @@ select
 from Customers
 where CustomerID in
 	(
-		select CustomerID
+		select distinct CustomerID
 		from Orders
 		where OrderID in 
 			(
@@ -115,7 +115,20 @@ declare @procost as int = 15
 select
 	CompanyName as 'Company Name',
 	Country as 'Country'
-from Customers
+from Customers as outside
+where exists 
+	(
+		select distinct CustomerID
+		from Orders as middle
+		where (outside.CustomerID = middle.CustomerID) and exists
+			(
+				select OrderID
+				from [Order Details] as inside
+				where (middle.OrderID = inside.OrderID) and (inside.Quantity*inside.UnitPrice < @procost)
+			) 
+	)
+order by Country
+go
 
 
 
