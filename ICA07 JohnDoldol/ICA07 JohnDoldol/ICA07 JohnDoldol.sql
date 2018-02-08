@@ -130,6 +130,52 @@ where exists
 order by Country
 go
 
+--q9
+declare @due as int = 7
+select ProductName
+from Products
+where ProductID in 
+		(
+			select ProductID
+			from [Order Details]
+			where OrderID in 
+				(
+					select OrderID
+					from Orders
+					where CustomerID in 
+						(
+							select CustomerID
+							from Customers
+							where Country in('UK','USA')
+						) and ( DATEDIFF(day,RequiredDate,ShippedDate) > 7) 
+				)
+		)
+order by ProductName
+go
+
+--q10
+select OrderID, ShipCity
+from Orders as outside
+where OrderID in
+		(
+			select OrderID
+			from [Order Details]
+			where ProductID in 
+				( 
+					select ProductID
+					from Products
+					where SupplierID in 
+						(
+							select SupplierID
+							from Suppliers
+							where outside.ShipCity = City
+						)
+				)
+		)
+order by ShipCity
+go
+					
+
 
 
 	
