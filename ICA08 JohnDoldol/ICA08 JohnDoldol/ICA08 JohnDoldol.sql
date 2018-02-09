@@ -40,7 +40,7 @@ go
 select
 	CustomerID as 'Customer ID',
 	OrderID as 'Order ID',
-	OrderDate as 'Order Date'
+	convert(varchar,OrderDate,106) as 'Order Date'
 from Orders
 where OrderID in
 	(
@@ -48,3 +48,5 @@ where OrderID in
 		from [Order Details]
 		order by Quantity desc
 	)
+order by [Customer ID]
+go
