@@ -37,3 +37,14 @@ where CustomerID in
 go
 
 --q5
+select
+	CustomerID as 'Customer ID',
+	OrderID as 'Order ID',
+	OrderDate as 'Order Date'
+from Orders
+where OrderID in
+	(
+		select top 3 OrderID
+		from [Order Details]
+		order by Quantity desc
+	)
