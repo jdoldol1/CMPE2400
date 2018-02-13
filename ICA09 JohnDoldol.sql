@@ -49,14 +49,14 @@ order by [Order Details].UnitPrice
 go
 
 --q5
-declare @shipdue as int = 34
-select
+declare @shipdue as int = 8
+select distinct
 	ShipName as 'Shipper',
 	ProductName as 'Product Name'
 from Orders inner join [Order Details]
 on Orders.OrderID = [Order Details].OrderID
 inner join Products
 on [Order Details].ProductID = Products.ProductID
-where Discontinued = 1 and (DATEDIFF(DAY,ShippedDate,RequiredDate) > @shipdue)
+where Discontinued = 1 and (DATEDIFF(DAY,RequiredDate,ShippedDate) > @shipdue)
 order by ShipName
 go
