@@ -7,6 +7,7 @@ from Suppliers inner join Products
 on	Suppliers.SupplierID = Products.SupplierID
 where Country = @usa
 order by CompanyName,ProductName
+go
 
 --q2
 declare @ul as varchar(2) = 'ul'
@@ -19,5 +20,43 @@ inner join Territories
 on EmployeeTerritories.TerritoryID = Territories.TerritoryID
 where LastName like '%' + @ul + '%'
 order by TerritoryDescription
+go
 
 --q3
+declare @sweden as varchar(6) = 'sweden'
+select distinct
+	CustomerID as 'Customer ID',
+	ProductName as 'Product Name'
+from Orders inner join [Order Details]
+on Orders.OrderID = [Order Details].OrderID
+inner join Products
+on [Order Details].ProductID = Products.ProductID
+where Orders.ShipCountry = @sweden and ProductName like '[u-z]%'
+order by ProductName
+go
+
+--q4
+select distinct
+	CategoryName as 'Category Name',
+	Products.UnitPrice as 'Product Price',
+	[Order Details].UnitPrice as 'Selling Price'
+from Categories inner join Products
+on Categories.CategoryID = Products.CategoryID 
+inner join [Order Details] 
+on Products.ProductID = [Order Details].ProductID
+where Products.UnitPrice <> [Order Details].UnitPrice and [Order Details].UnitPrice > 69
+order by [Order Details].UnitPrice
+go
+
+--q5
+declare @shipdue as int = 34
+select
+	ShipName as 'Shipper',
+	ProductName as 'Product Name'
+from Orders inner join [Order Details]
+on Orders.OrderID = [Order Details].OrderID
+inner join Products
+on [Order Details].ProductID = Products.ProductID
+where Discontinued = 1 and (DATEDIFF(DAY,ShippedDate,RequiredDate) > @shipdue)
+order by ShipName
+go
