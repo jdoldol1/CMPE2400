@@ -35,9 +35,31 @@ go
 select top 5
 	ProductName as 'Product Name',
 	Quantity
-from Products left outer join [Order Details] 
-on Products.ProductID = [Order Details].ProductID
+from Products full join [Order Details] 
+on Products.ProductID = [Order Details].ProductID 
 order by Quantity
 go
 
 --q5
+select top 10
+	CompanyName as 'Company',
+	ProductName as 'Product',
+	Quantity
+from Suppliers full join Products
+on Suppliers.SupplierID = Products.SupplierID
+full join [Order Details]
+on Products.ProductID = [Order Details].ProductID
+order by Quantity, CompanyName desc
+go
+
+--q6
+	select CompanyName as 'Customer/Supplier with Nothing'
+	from Customers left join Orders
+	on Customers.CustomerID = Orders.CustomerID
+	where OrderDate is null
+union
+	select CompanyName
+	from Suppliers left join Products
+	on Suppliers.SupplierID = Products.SupplierID
+	where ProductName is null
+go
