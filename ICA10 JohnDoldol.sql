@@ -62,4 +62,24 @@ union
 	from Suppliers left join Products
 	on Suppliers.SupplierID = Products.SupplierID
 	where ProductName is null
+order by CompanyName
 go
+
+--q7
+declare @customer as varchar(8) = 'Customer'
+declare @supplier as varchar(8) = 'Supplier'
+	select
+	@customer as 'Type',
+	CompanyName as 'Customer/Supplier with Nothing'
+	from Customers left join Orders
+	on Customers.CustomerID = Orders.CustomerID 
+	where OrderDate is null
+union
+	select 
+	@supplier as 'Type',
+	CompanyName as 'Customer/Supplier with Nothing'
+	from Suppliers left join Products
+	on Suppliers.SupplierID = Products.SupplierID
+	where ProductName is null
+go
+	
