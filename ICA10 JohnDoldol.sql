@@ -1,4 +1,7 @@
-use NorthwindTraders
+-- John Doldol
+-- CMPE2400 - ICA10
+-- February 26, 2018
+
 
 --q1
 select
