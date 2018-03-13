@@ -20,3 +20,16 @@ order by max(o.OrderDate), e.LastName
  go
 
 --q3
+select
+	s.CompanyName as 'Supplier',
+	s.Country,
+	count(p.ProductID) as 'Num Products',
+	avg(p.UnitPrice) as 'Avg price'
+from Suppliers as s left outer join Products as p
+on s.SupplierID = p.SupplierID
+where s.CompanyName like '[h,u,r,t]%'
+group by s.CompanyName, s.Country
+order by count(p.ProductID)
+go 
+
+
