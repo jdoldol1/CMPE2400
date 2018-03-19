@@ -63,3 +63,16 @@ group by c.CompanyName, c.City, o.OrderDate
 order by count(o.OrderDate)
 go
 
+--q6
+select
+	concat(e.LastName,', ',e.FirstName) as 'Name',
+	sum(d.UnitPrice*d.Quantity) as 'Sales Total',
+	count(d.OrderID) as 'Detail Items'
+from Employees as e left join Orders as o
+	on e.EmployeeID = o.EmployeeID
+	left join [Order Details] as d
+	on d.OrderID = o.OrderID
+group by e.LastName, e.FirstName
+order by sum(d.UnitPrice*d.Quantity) desc
+go
+
