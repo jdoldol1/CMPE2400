@@ -47,3 +47,19 @@ order by Coalesce(MIN(p.UnitPrice),0)
 go
 
 --q5
+declare @walla as varchar(12) = 'Walla Walla'
+declare @Poland as varchar(6) = 'Poland'
+select
+	c.CompanyName as 'Customer',
+	c.City as 'City',
+	convert(varchar,o.OrderDate,106) as 'Order Date',
+	count(o.OrderDate) as 'Products in Order'
+from Customers as c left join Orders as o
+	on c.CustomerID = o.CustomerID 
+	left join [Order Details] as d
+	on o.OrderID = d.OrderID
+where c.City like @walla or c.Country like @Poland
+group by c.CompanyName, c.City, o.OrderDate
+order by count(o.OrderDate)
+go
+
