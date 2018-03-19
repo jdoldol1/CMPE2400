@@ -15,3 +15,17 @@ order by t.ass_type_desc
 go
 
 --q2
+declare @id as int = 88
+select 
+	CONCAT(r.ass_desc, '(', t.ass_type_desc ,')') as 'Desc(Type)',
+	round(avg(e.score/r.max_score)*100,2) as 'Avg',
+	count(e.score) as 'Num Score'
+from Assignment_type as t left join Requirements as r
+ on t.ass_type_id = r.ass_type_id
+ left join Results as e
+ on e.req_id = r.req_id
+where e.class_id = @id
+group by r.ass_desc, t.ass_type_desc, r.max_score
+having avg(e.score/r.max_score)*100 > 57
+order by t.ass_type_desc
+go
