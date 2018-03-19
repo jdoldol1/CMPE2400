@@ -32,4 +32,18 @@ group by s.CompanyName, s.Country
 order by count(p.ProductID)
 go 
 
+--q4
+declare @usa as varchar(3) = 'USA'
+select 
+	s.CompanyName as 'Supplier',
+	s.Country as 'Country',
+	Coalesce(MIN(p.UnitPrice),0) as 'Min Price',
+	coalesce(MAX(p.UnitPrice), 0) as 'Max Price'
+from Suppliers as s left join Products as p
+on s.SupplierID = p.SupplierID
+where s.Country like @usa
+group by s.CompanyName, s.Country
+order by Coalesce(MIN(p.UnitPrice),0)
+go
 
+--q5
