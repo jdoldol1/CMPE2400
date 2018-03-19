@@ -29,3 +29,25 @@ group by r.ass_desc, t.ass_type_desc, r.max_score
 having avg(e.score/r.max_score)*100 > 57
 order by t.ass_type_desc
 go
+
+--q3
+declare @id as int = 123
+select
+	s.last_name as 'Last',
+	a.ass_type_desc,
+	round(min((r.score/q.max_score) * 100),1) as 'Low',
+	round(max((r.score/q.max_score) * 100),1) as 'High',
+	round(sum(r.score / q.max_score)/count(r.score) * 100,1) as 'Avg'
+from Students as s left join Results as r
+	on s.student_id = r.student_id
+	left join Requirements as q 
+		on q.req_id = r.req_id
+		left join Assignment_type as a
+			on q.ass_type_id = a.ass_type_id
+where r.class_id = @id
+group by s.last_name, a.ass_type_desc
+having round(sum(r.score / q.max_score)/count(r.score) * 100,1) > 70
+order by a.ass_type_desc,'Avg'
+go
+
+--q4
