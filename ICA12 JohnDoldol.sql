@@ -51,3 +51,39 @@ order by a.ass_type_desc,'Avg'
 go
 
 --q4
+select 
+	i.last_name as 'Last',
+	convert(varchar,c.start_date,106) as 'Start',
+	count(s.student_id) as 'Num Registered',	
+	sum(convert(int,s.active)) as 'Num active'
+from Instructors as i left join Classes as c
+	on i.instructor_id = c.instructor_id
+	left join class_to_student as s
+		on c.class_id = s.class_id
+group by i.last_name, c.start_date
+having (count(s.student_id) - sum(convert(int,s.active))) > 3
+order by i.last_name, c.start_date
+go
+
+--q5
+declare @startdate as int = 2011
+select 
+	concat(st.last_name,', ',st.first_name) as 'Student',
+	c.class_desc as 'Class',
+	t.ass_type_desc,
+	count(st.last_name) as 'Submitted',
+	round(avg(res.score/req.max_score) * 100,1) as 'Avg'
+from Students as st left join Results as res
+	on st.student_id = res.student_id
+	left join Requirements as req
+		on res.req_id = req.req_id
+		left join Assignment_type as t
+			on req.ass_type_id = t.ass_type_id
+			 left join Classes as c 
+				on req.class_id = c.class_id
+where DATEPART(year, start_date) = @startdate and res.score is not null
+group by st.last_name, st.first_name, c.class_desc, t.ass_type_desc
+having count(st.last_name) > 10 and avg(res.score/req.max_score) * 100 < 40
+order by 'Submitted','Avg'
+go
+				
