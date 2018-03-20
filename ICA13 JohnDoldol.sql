@@ -42,7 +42,7 @@ go
 
 
 --q3
-if exists ( select * from sysobjects where name = 'ica13_02' )
+if exists ( select * from sysobjects where name = 'ica13_03' )
 	drop procedure ica13_03
 go
 create procedure ica13_03
@@ -71,6 +71,10 @@ exec ica13_03 15
 go
 
 --q4
+if exists ( select * from sysobjects where name = 'ica13_04' )
+	drop procedure ica13_04
+go
+
 create procedure ica13_04
 as
 	declare @uvalue as int = 20
