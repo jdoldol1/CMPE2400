@@ -154,3 +154,38 @@ exec ica13_06 @class_id = 89
 go
 
 --q7
+if exists ( select * from sysobjects where name = 'ica13_07' )
+	drop procedure ica13_07
+go
+
+create procedure ica13_07
+@year as int,
+@minAvg as int = 50,
+@minSize as int = 10
+as
+	select 
+		concat(st.last_name,', ',st.first_name) as 'Student',
+		c.class_desc as 'Class',
+		t.ass_type_desc as 'Type',
+		count(st.last_name) as 'Submitted',
+		round(avg(res.score/req.max_score) * 100,1) as 'Avg'
+	from ClassTrak.dbo.Students as st 
+		left join ClassTrak.dbo.Results as res
+			on st.student_id = res.student_id
+		left join ClassTrak.dbo.Requirements as req
+			on res.req_id = req.req_id
+		left join ClassTrak.dbo.Assignment_type as t
+			on req.ass_type_id = t.ass_type_id
+		left join ClassTrak.dbo.Classes as c 
+			on req.class_id = c.class_id
+	where DATEPART(year, start_date) = @year and res.score is not null
+	group by st.last_name, st.first_name, c.class_desc, t.ass_type_desc
+	having count(st.last_name) > @minSize and avg(res.score/req.max_score) * 100 < @minAvg
+	order by [Submitted], [Avg]
+go
+
+exec ica13_07 @year=2011
+go
+
+exec ica13_07 @year=2011, @minAvg=40, @minSize=15
+go

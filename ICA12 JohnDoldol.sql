@@ -70,7 +70,7 @@ declare @startdate as int = 2011
 select 
 	concat(st.last_name,', ',st.first_name) as 'Student',
 	c.class_desc as 'Class',
-	t.ass_type_desc,
+	t.ass_type_desc as 'Type',
 	count(st.last_name) as 'Submitted',
 	round(avg(res.score/req.max_score) * 100,1) as 'Avg'
 from Students as st left join Results as res
@@ -84,6 +84,6 @@ from Students as st left join Results as res
 where DATEPART(year, start_date) = @startdate and res.score is not null
 group by st.last_name, st.first_name, c.class_desc, t.ass_type_desc
 having count(st.last_name) > 10 and avg(res.score/req.max_score) * 100 < 40
-order by 'Submitted','Avg'
+order by [Submitted],[Avg]
 go
 				
