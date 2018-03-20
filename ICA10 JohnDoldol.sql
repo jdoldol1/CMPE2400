@@ -35,13 +35,13 @@ order by LastName
 go
 
 --q4
-select top 5
+select top 1
 		p.ProductName as 'Product Name',
 		od.Quantity
 	from NorthwindTraders.dbo.Products p 
 	left outer join NorthwindTraders.dbo.[Order Details] od
 	on p.ProductID = od.ProductID
-	order by od.Quantity
+	order by od.Quantity desc
 go
 
 --q5
