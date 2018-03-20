@@ -178,7 +178,7 @@ as
 			on req.ass_type_id = t.ass_type_id
 		left join ClassTrak.dbo.Classes as c 
 			on req.class_id = c.class_id
-	where DATEPART(year, start_date) = @year and res.score is not null
+	where DATEPART(year, c.start_date) = @year and res.score is not null
 	group by st.last_name, st.first_name, c.class_desc, t.ass_type_desc
 	having count(st.last_name) > @minSize and avg(res.score/req.max_score) * 100 < @minAvg
 	order by [Submitted], [Avg]
