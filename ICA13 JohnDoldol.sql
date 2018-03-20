@@ -34,14 +34,21 @@ as
 			left join NorthwindTraders.dbo.[Order Details] as d
 				on d.OrderID = o.OrderID
 		group by e.LastName, e.FirstName
-		order by sum(d.UnitPrice*d.Quantity) desc 
+		order by [Sales Total] desc 
 go
 
+exec ica13_02
+go
+
+
 --q3
+if exists ( select * from sysobjects where name = 'ica13_02' )
+	drop procedure ica13_03
+go
 create procedure ica13_03
 @maxPrice as int = null
 as
-	declare @cost as int = 15
+	--declare @cost as int = 15
 	select
 		c.CompanyName as 'Company Name',
 		c.Country as 'Country'
@@ -54,10 +61,13 @@ as
 				(
 					select OrderID
 					from NorthwindTraders.dbo.[Order Details] as d
-					where (d.Quantity * d.UnitPrice) < @cost
+					where (d.Quantity * d.UnitPrice) < @maxPrice
 				)	
 		)
 	order by Country
+go
+
+exec ica13_03 15
 go
 
 --q4
