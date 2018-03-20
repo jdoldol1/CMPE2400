@@ -97,3 +97,31 @@ exec ica13_04 20, 'confections'
 go
 
 --q5
+if exists ( select * from sysobjects where name = 'ica13_05' )
+	drop procedure ica13_05
+go
+
+create procedure ica13_05
+@minPrice as money = null,
+@country as nvarchar(max) = 'USA'
+as
+	select 
+		s.CompanyName as 'Supplier',
+		s.Country as 'Country',
+		Coalesce(MIN(p.UnitPrice),0) as 'Min Price',
+		Coalesce(MAX(p.UnitPrice), 0) as 'Max Price'
+	from NorthwindTraders.dbo.Suppliers as s 
+	left join NorthwindTraders.dbo.Products as p
+		on s.SupplierID = p.SupplierID
+	where s.Country like @country
+	group by s.CompanyName, s.Country
+	having Coalesce(MIN(p.UnitPrice),0) > @minPrice
+	order by [Min Price]
+go
+
+exec ica13_05 15
+go
+exec ica13_05 @minPrice = 15
+go
+exec ica13_05 @minPrice = 5, @country = 'UK'
+go
