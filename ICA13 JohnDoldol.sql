@@ -46,7 +46,7 @@ if exists ( select * from sysobjects where name = 'ica13_03' )
 	drop procedure ica13_03
 go
 create procedure ica13_03
-@maxPrice as int = null
+@maxPrice as money = null
 as
 	--declare @cost as int = 15
 	select
@@ -76,8 +76,9 @@ if exists ( select * from sysobjects where name = 'ica13_04' )
 go
 
 create procedure ica13_04
+@minPrice as money = null,
+@categoryName as nvarchar(max) = ''
 as
-	declare @uvalue as int = 20
 	select 
 		outy.ProductName
 	from NorthwindTraders.dbo.Products as outy
@@ -86,13 +87,13 @@ as
 			select CategoryID
 			from NorthwindTraders.dbo.Categories as inny
 			where (outy.CategoryID = inny.CategoryID) and 
-			(inny.CategoryName in('seafood','confections'))
+			(inny.CategoryName like @categoryName)
 		)
-	and UnitPrice > @uvalue
+	and UnitPrice > @minPrice
 	order by outy.CategoryID, outy.ProductName
 go
 
-exec ica13_03
+exec ica13_04 20, 'confections'
 go
 
 --q5
