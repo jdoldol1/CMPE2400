@@ -125,3 +125,32 @@ exec ica13_05 @minPrice = 15
 go
 exec ica13_05 @minPrice = 5, @country = 'UK'
 go
+
+--q6
+if exists ( select * from sysobjects where name = 'ica13_06' )
+	drop procedure ica13_06
+go
+
+create procedure ica13_06
+@class_id as int = 0
+as
+	select 
+		t.ass_type_desc as 'Type',
+		round(avg(e.score),2) as 'Raw Avg',
+		round(avg((e.score / r.max_score)* 100),2)  as 'Avg',
+		count(e.score) as 'Num'
+	from ClassTrak.dbo.Assignment_type as t left join  ClassTrak.dbo.Requirements as r
+		on t.ass_type_id = r.ass_type_id
+		left join ClassTrak.dbo.Results as e 
+		on e.req_id = r.req_id
+	where e.class_id = @class_id
+	group by t.ass_type_desc
+	order by t.ass_type_desc
+go
+
+exec ica13_06 88
+go
+exec ica13_06 @class_id = 89
+go
+
+--q7
