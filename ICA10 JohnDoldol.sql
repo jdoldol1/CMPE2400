@@ -36,11 +36,12 @@ go
 
 --q4
 select top 5
-	ProductName as 'Product Name',
-	Quantity
-from Products full join [Order Details] 
-on Products.ProductID = [Order Details].ProductID 
-order by Quantity
+		p.ProductName as 'Product Name',
+		od.Quantity
+	from NorthwindTraders.dbo.Products p 
+	left outer join NorthwindTraders.dbo.[Order Details] od
+	on p.ProductID = od.ProductID
+	order by od.Quantity
 go
 
 --q5
