@@ -42,3 +42,24 @@ select
 	@product as 'ProductName',
 	@quantity as 'Highest Qty'
 go
+
+--q2
+if exists ( select * from sysobjects where name = 'ica14_02' )
+	drop procedure ica14_02
+go
+create procedure ica14_02
+@year as int,
+@coname as varchar(64) output,
+@average as money
+as
+	select top 1
+		@coname = CONCAT(e.LastName, ', ', e.FirstName),
+		@average = AVG(o.Freight)
+	from NorthwindTraders.dbo.Employees as e
+	inner join NorthwindTraders.dbo.Orders as o
+	on e.EmployeeID = o.EmployeeID	
+	group by e.LastName, e.FirstName
+	order by max(o.OrderDate), e.LastName
+go
+
+
