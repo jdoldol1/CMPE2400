@@ -82,3 +82,26 @@ select
 	@YEAR as 'Year',
 	@fullname as 'Name',
 	@freight as 'Biggest Avg Freight'
+
+
+--q3
+if exists  ( select * from sysobjects where name = 'ica14_03')
+	drop procedure ica14_03
+go
+
+create procedure ica14_03
+@class_id as int,
+@assignment_type as varchar(max) = 'all'
+as
+	select
+		
+	from ClassTrak.dbo.Students as s
+	left join ClassTrak.dbo.Results as r
+		on s.student_id = r.student_id
+	left join ClassTrak.dbo.Requirements as e
+		on r.req_id = e.req_id
+	left join ClassTrak.dbo.Assignment_type as a
+		on e.ass_type_id = a.ass_type_id
+	where r.class_id = @class_id and a.ass_type_desc = @assignment_type
+
+go
