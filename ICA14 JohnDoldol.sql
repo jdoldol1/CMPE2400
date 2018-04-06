@@ -134,3 +134,71 @@ exec ica14_03 @cid, 'le'
 go
 
 --q4
+
+if exists  ( select * from sysobjects where name = 'ica14_04')
+	drop procedure ica14_04
+go
+
+create procedure ica14_04
+@student as nvarchar(max),
+@summary as bit = 0
+as
+	declare @chosenName as nvarchar(max)
+	declare @matching as int
+
+	select
+		@chosenName = s.first_name + ' ' + s.last_name 
+	from ClassTrak.dbo.Students as s
+	where s.first_name + ' ' + s.last_name like @student + '%'
+	set @matching = @@ROWCOUNT
+	
+	if @matching <> 1
+		return -1
+
+	select
+		@chosenName as 'Name',
+		c.class_desc,
+		e.ass_type_id,
+		e.ass_desc,
+		r.score,
+		e.max_score
+	into #StudentTable
+	from ClassTrak.dbo.Students as s
+		inner join ClassTrak.dbo.class_to_student as cts
+			on s.student_id = cts.student_id
+		inner join ClassTrak.dbo.Classes as c
+			on cts.class_id = c.class_id
+		inner join ClassTrak.dbo.Results as r
+			on c.class_id = r.class_id
+		inner join ClassTrak.dbo.Requirements as e
+			on r.req_id = e.req_id
+	where s.first_name + ' ' + s.last_name = @chosenName
+
+	if @summary = 1
+		begin
+			select
+				@chosenName as 'Name',
+				st.class_desc,
+				round(avg(st.score * 100 / st.max_score),1) as 'Avg'
+			from #StudentTable as st
+			group by st.class_desc
+			order by st.class_desc
+		end
+	else
+		begin
+			select
+				@chosenName as 'Name',
+				st.class_desc,
+				st.ass_type_id,
+				round(avg(st.score * 100 / st.max_score), 1) as 'Avg'
+				from #StudentTable as st
+				group by st.class_desc, st.ass_type_id
+				order by st.class_desc, st.ass_type_id
+		end
+
+	return 1
+go
+
+declare @retVal as int
+exec @retVal = ica14_04 @student = 'Ro'
+select @retVal
