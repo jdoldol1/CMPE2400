@@ -12,9 +12,9 @@ as
 		@productName = p.ProductName,
 		@highestQuantity = od.Quantity
 	from NorthwindTraders.dbo.Categories as c
-		left join NorthwindTraders.dbo.Products as p 
+		inner join NorthwindTraders.dbo.Products as p 
 			on c.CategoryID = p.CategoryID
-		left join NorthwindTraders.dbo.[Order Details] od
+		inner join NorthwindTraders.dbo.[Order Details] od
 			on p.ProductID = od.ProductID
 	where c.CategoryName = @category
 	order by od.Quantity desc
@@ -91,17 +91,46 @@ go
 
 create procedure ica14_03
 @class_id as int,
-@assignment_type as varchar(max) = 'all'
+@ass_type_desc as varchar(max) = 'all'
 as
 	select
-		
+		s.last_name as 'Last',
+		a.ass_type_desc,
+		round(min(r.score * 100 / e.max_score),1) as 'Low',
+		round(max(r.score * 100 / e.max_score),1) as 'High',
+		round(avg(r.score * 100 / e.max_score),1) as 'Avg'
+	into #StudentStats
 	from ClassTrak.dbo.Students as s
-	left join ClassTrak.dbo.Results as r
-		on s.student_id = r.student_id
-	left join ClassTrak.dbo.Requirements as e
-		on r.req_id = e.req_id
-	left join ClassTrak.dbo.Assignment_type as a
-		on e.ass_type_id = a.ass_type_id
-	where r.class_id = @class_id and a.ass_type_desc = @assignment_type
+		inner join ClassTrak.dbo.Results as r
+			on s.student_id = r.student_id
+		inner join ClassTrak.dbo.Requirements as e
+			on r.req_id = e.req_id
+		inner join ClassTrak.dbo.Assignment_type as a
+			on e.ass_type_id = a.ass_type_id
+	where r.class_id = @class_id
+	group by s.last_name, a.ass_type_desc
 
+	if @ass_type_desc = 'ica'
+		set @ass_type_desc = 'Assignment'
+	else if @ass_type_desc = 'lab'
+		set @ass_type_desc = 'Lab'
+	else if @ass_type_desc = 'le'
+		set @ass_type_desc = 'Lab Exam'
+	else if @ass_type_desc = 'fe'
+		set @ass_type_desc = 'Final'
+
+	select * 
+	from #StudentStats as ss
+	where ss.ass_type_desc = @ass_type_desc
+	order by [Avg] desc
 go
+
+declare @cid as int
+set @cid = 123
+exec ica14_03 @cid, 'ica'
+
+set @cid = 123
+exec ica14_03 @cid, 'le'
+go
+
+--q4
