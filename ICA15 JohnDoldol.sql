@@ -17,23 +17,32 @@ go
 -- Insert a new Instructor : Donald Trump
 --  Check column types, supply necessary values, it may require a column list
 --  Save your identity into a variable
+
 declare @instructor_id as int
 insert into Instructors(first_name,last_name)
 values ('Donald','Trump')
 set @instructor_id = @@IDENTITY
+
 -- B 
 -- Insert a new Course : cmpe2442 "Fast and Furious - SQL Edition"
 --  Check column types, supply necessary values, it may require a column list
 --  Save your identity into a variable
+
 declare @course_id as int
 insert into Courses(course_abbrev,course_desc)
 values ('cmpe2442','Fast and Furious - SQL Edition')
 set @course_id = @@IDENTITY
+
 -- C
 -- Insert a record indicating your new instructor is teaching the new course
 --  description : "Beware the optimizer"
 --  start_date : use 01 Sep 2016
 --  Save the identity into a variable
+
+declare @class_id as int
+insert into Classes(class_desc ,instructor_id,course_id , start_date)
+values('Beware the optimizer',@instructor_id,@course_id,'Sep-01-2016')
+set @class_id = @@IDENTITY
 
 -- D Insert a bunch in one insert
 -- Generate the insert statement to Add all the students with a last name that
