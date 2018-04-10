@@ -109,18 +109,52 @@ where CLS.class_desc like '%Beware%'
 declare @class_id as int
 declare @course_id as int
 declare @ins_id as int
+
 select 
 	@class_id = CLS.class_id
 from Classes as CLS
 where CLS.class_desc like '%Beware%'
 	and start_date = '2016-09-01'
 
+select 
+	@course_id = CLS.course_id,
+	@ins_id = INS.instructor_id
+from Courses as CRS
+	inner join Classes as CLS
+		on CRS.course_id = CLS.course_id
+	inner join Instructors as INS
+		on CLS.instructor_id = INS.instructor_id
+where	CLS.start_date = '2016-09-01' and
+		CLS.class_desc = 'Beware the optimizer' and
+		CRS.course_abbrev = 'CMPE2442' and 
+		CRS.course_desc = 'Fast and Furious - SQL Edition'
 
+delete Classes
+where class_id = @class_id
 -- B - Delete the new course as saved in C
+
+delete Courses
+where Courses.course_id = @course_id
 
 -- A - Delete the new instructor as saved in C
 
--- E - Repeat q1 part E to verify the removal of all the data.
+delete Instructors
+where instructor_id = @ins_id
 
+-- E - Repeat q1 part E to verify the removal of all the data.
+use [jdoldol_ClassTrak]
+select * from Instructors
+select * from Courses where course_desc like '%Fast%'
+select * from Classes where datediff(day, '01-Aug-2016', Classes.start_date) > 0
+select 
+	S.student_id as 'ID',
+	S.first_name + ' ' + S.last_name as 'Student Name'
+from Students as S
+	inner join class_to_student as CLS_T_STU
+		on S.student_id = CLS_T_STU.student_id
+	inner join Classes as CLS
+		on CLS_T_STU.class_id = CLS.class_id
+where	CLS.class_desc like '%Beware%'
+order by S.last_name, S.first_name
 
 go
