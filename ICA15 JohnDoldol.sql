@@ -106,6 +106,15 @@ where CLS.class_desc like '%Beware%'
 -- C - declare, query and set class id to your new class based on above filter.
 --     declare, query and save the linked course and instructor ( use in B and A )
 --     Delete the new class
+declare @class_id as int
+declare @course_id as int
+declare @ins_id as int
+select 
+	@class_id = CLS.class_id
+from Classes as CLS
+where CLS.class_desc like '%Beware%'
+	and start_date = '2016-09-01'
+
 
 -- B - Delete the new course as saved in C
 
