@@ -48,6 +48,12 @@ set @class_id = @@IDENTITY
 -- Generate the insert statement to Add all the students with a last name that
 --  starts with a vowel to the new class
 
+insert into class_to_student(class_id,student_id)
+	select @class_id, student_id
+	from Students
+	where last_name like '[aeiou]%'
+
+
 -- E
 --  Prove it all, generate a select to show :
 --   All instructors - see your new entry
