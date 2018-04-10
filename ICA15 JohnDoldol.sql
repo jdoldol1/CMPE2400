@@ -80,11 +80,14 @@ go
 -- end q1
 
 
+use jdoldol_ClassTrak
+go
 
 -- q2 - Undo all your changes to reset the database, you must do this in reverse order to
 --      ensure you do not attempt to corrupt Referencial Integrity.
 --     As such, work backwards from D to A, deleting what we added, but you must query the DB
 --      to find and save the relevant keys.
+
 
 -- q2 - Undo all your changes to reset the database, you must do this in reverse order to
 --      ensure you do not attempt to corrupt Referencial Integrity.
@@ -92,6 +95,13 @@ go
 
 -- D - Delete all students that have been assigned to your new class, do this without a 
 --     variable, rather perform a join with proper filtering for this delete
+
+delete class_to_student
+from class_to_student as CTS
+	inner join Classes as CLS
+		on CTS.class_id = CLS.class_id
+where CLS.class_desc like '%Beware%'
+	and start_date = '2016-09-01'
 
 -- C - declare, query and set class id to your new class based on above filter.
 --     declare, query and save the linked course and instructor ( use in B and A )
