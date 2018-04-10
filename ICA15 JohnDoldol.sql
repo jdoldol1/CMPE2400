@@ -30,7 +30,7 @@ set @instructor_id = @@IDENTITY
 
 declare @course_id as int
 insert into Courses(course_abbrev,course_desc)
-values ('cmpe2442','Fast and Furious - SQL Edition')
+values ('CMPE2442','Fast and Furious - SQL Edition')
 set @course_id = @@IDENTITY
 
 -- C
@@ -41,7 +41,7 @@ set @course_id = @@IDENTITY
 
 declare @class_id as int
 insert into Classes(class_desc ,instructor_id,course_id , start_date)
-values('Beware the optimizer',@instructor_id,@course_id,'Sep-01-2016')
+values('Beware the optimizer',@instructor_id,@course_id,'2016-09-01')
 set @class_id = @@IDENTITY
 
 -- D Insert a bunch in one insert
@@ -53,7 +53,6 @@ insert into class_to_student(class_id,student_id)
 	from Students
 	where last_name like '[aeiou]%'
 
-
 -- E
 --  Prove it all, generate a select to show :
 --   All instructors - see your new entry
@@ -61,6 +60,21 @@ insert into class_to_student(class_id,student_id)
 --   All classes that have a start_date after 1 Aug 2016
 --   All students in the new class - filter by description having "Beware"
 --       sort by first name in last name
+
+use [jdoldol_ClassTrak]
+select * from Instructors
+select * from Courses
+select * from Classes where datediff(day, '01-Aug-2016', Classes.start_date) > 0
+select 
+	S.student_id as 'ID',
+	S.first_name + ' ' + S.last_name as 'Student Name'
+from Students as S
+	inner join class_to_student as CLS_T_STU
+		on S.student_id = CLS_T_STU.student_id
+	inner join Classes as CLS
+		on CLS_T_STU.class_id = CLS.class_id
+where	CLS.class_desc like '%Beware%'
+order by S.last_name, S.first_name
 
 go
 -- end q1
