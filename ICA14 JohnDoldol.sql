@@ -140,10 +140,10 @@ if exists  ( select * from sysobjects where name = 'ica14_04')
 go
 
 create procedure ica14_04
-@student as nvarchar(max),
+@student as nvarchar(24),
 @summary as bit = 0
 as
-	declare @chosenName as nvarchar(max)
+	declare @chosenName as nvarchar(24)
 	declare @matching as int
 
 	select
@@ -169,7 +169,7 @@ as
 		inner join ClassTrak.dbo.Classes as c
 			on cts.class_id = c.class_id
 		inner join ClassTrak.dbo.Results as r
-			on c.class_id = r.class_id
+			on c.class_id = r.class_id and s.student_id = r.student_id
 		inner join ClassTrak.dbo.Requirements as e
 			on r.req_id = e.req_id
 	where s.first_name + ' ' + s.last_name = @chosenName
@@ -190,15 +190,26 @@ as
 				@chosenName as 'Name',
 				st.class_desc,
 				st.ass_type_id,
-				round(avg(st.score * 100 / st.max_score), 1) as 'Avg'
-				from #StudentTable as st
-				group by st.class_desc, st.ass_type_id
-				order by st.class_desc, st.ass_type_id
+				round(avg(st.score/ st.max_score)*100, 1) as 'Avg'
+			from #StudentTable as st
+			group by st.class_desc, st.ass_type_id
+			order by st.class_desc, st.ass_type_id
 		end
-
 	return 1
 go
 
 declare @retVal as int
 exec @retVal = ica14_04 @student = 'Ro'
 select @retVal
+
+exec @retVal = ica14_04 @student = 'Ron'
+
+select @retVal
+exec @retVal = ica14_04 @student = 'Ron', @summary = 1
+select @retVal
+go
+
+-- q5
+if exists ( select * from sysobjects where name = 'ica14_05' )
+	drop procedure ica14_05
+go
