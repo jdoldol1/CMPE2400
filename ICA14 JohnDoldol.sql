@@ -210,6 +210,73 @@ select @retVal
 go
 
 -- q5
+-- q5
 if exists ( select * from sysobjects where name = 'ica14_05' )
 	drop procedure ica14_05
 go
+
+create procedure ica14_05
+@lastname as nvarchar(24) = null,
+@fullname as nvarchar(24) output,
+@numberClasses as int output,
+@totalStudents as int output,
+@totalGraded as int output,
+@average as float output
+as
+	
+	declare @result as int
+	declare @id as int
+	select 
+		@id = I.instructor_id,
+		@fullname = I.first_name + ' ' + I.last_name
+	from ClassTrak.dbo.Instructors as I
+	where I.last_name  like '%' + @lastname + '%'
+	set @result = @@ROWCOUNT
+
+	--make sure you have a match or else return
+	if @result <> 1
+	begin
+		set @fullname = null
+		return -1
+	end
+
+	select
+		@numberClasses = count(distinct cts.class_id),
+		@totalStudents = count(cts.student_id)
+	from ClassTrak.dbo.Instructors as I
+		inner join ClassTrak.dbo.Classes as C
+			on I.instructor_id = C.instructor_id
+		inner join ClassTrak.dbo.class_to_student as cts
+			on C.class_id = cts.class_id
+	where I.instructor_id = @id	
+
+	select
+		@totalGraded = count(r.score * 100 / e.max_score),
+		@average = avg(r.score * 100 / e.max_score)
+	from ClassTrak.dbo.Instructors as I
+		inner join ClassTrak.dbo.Classes as C
+			on I.instructor_id = C.instructor_id
+		inner join ClassTrak.dbo.Results as R
+			on C.class_id = R.class_id
+		inner join ClassTrak.dbo.Requirements as E
+			on r.req_id = e.req_id
+	where I.instructor_id = @id
+	return 1
+go
+
+declare @name as nvarchar(24)
+declare @class as int
+declare @students as int
+declare @graded as int
+declare @avg as float
+declare @returned as int
+exec @returned = ica14_05 'Cas', @name output, @class output, @students output, @graded output, @avg output
+
+
+select
+	@name as 'Instructor',
+	@returned as 'Returned',
+	@class as 'Num Classes',
+	@students as 'Total Students',
+	@graded as 'Total Graded',
+	@avg as 'Avg Awarded'
